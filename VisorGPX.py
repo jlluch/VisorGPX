@@ -127,7 +127,7 @@ file = '1997571669.csv'
 
 @st.cache_data() 
 def loadFile(f):
-    path     = r"OL\\"
+    path     = "OL/"
     df = pd.read_csv(path+f)
     #columnas: Elevation	HR	Latitude	Longitude	Minutes	Tempature	Timestamp	Distance	Time_Dif	TimeDif	cumDistance
     col1, col2, col3 = st.sidebar.columns(3)
