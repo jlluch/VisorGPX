@@ -127,7 +127,7 @@ file = '1997571669.csv'
 
 @st.cache_data() 
 def loadFile(f):
-    path     = r"C:\Users\xavi8\OneDrive - UPV\BackUP\GPX\CSV\OL\\"
+    path     = r"https://upvedues-my.sharepoint.com/:f:/g/personal/jlluch_upv_edu_es/Em7EhjyeJRpJm3NmoeGYguYBbs1iBJcf7xvInFvTNsX9Rg?e=9FFXpB/"
     df = pd.read_csv(path+f)
         
     #columnas: Elevation	HR	Latitude	Longitude	Minutes	Tempature	Timestamp	Distance	Time_Dif	TimeDif	cumDistance
