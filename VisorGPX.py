@@ -78,7 +78,7 @@ dfO = pd.read_csv('VLCOF23.csv')
 folium.PolyLine(list(zip(dfO['Latitude'],dfO['Longitude'])), color = 'red', opacity=0.5).add_to(m)
 points = list(zip(dfO['Latitude'],dfO['Longitude']))
 for point in points:
-    folium.CircleMarker(location=point, color='red', fill=True, radius=1).add_to(m)
+    folium.CircleMarker(location=point, color='green', fill=True, radius=2).add_to(m)
 
 folium.PolyLine(list(zip(df['Latitude'],df['Longitude']))).add_to(m)
 points = list(zip(df2['Latitude'],df2['Longitude']))
