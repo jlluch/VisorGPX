@@ -12,6 +12,7 @@ import folium
 from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium, folium_static
 from datetime import datetime
+import os
 
 
 APP_TITLE = 'Visor GPX'
@@ -124,10 +125,13 @@ csv = ['1997571669.csv',
 '1995992605.csv']
 
 file = '1997571669.csv'
+path     = "OL/"
+#Creo una lista con los ficheros csv del directorio OL
+csv = os.listdir(path)
+
 
 @st.cache_data() 
 def loadFile(f):
-    path     = "OL/"
     df = pd.read_csv(path+f)
     #columnas: Elevation	HR	Latitude	Longitude	Minutes	Tempature	Timestamp	Distance	Time_Dif	TimeDif	cumDistance
     col1, col2, col3 = st.sidebar.columns(3)
