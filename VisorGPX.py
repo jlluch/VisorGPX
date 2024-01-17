@@ -74,7 +74,7 @@ lonMap = df.Longitude.mean()
 
 m = folium.Map(location=[latMap, lonMap], zoom_start=14,attr='LOL',max_bounds=True)
 #Dibuja el recorrido oficial
-dfO = df = pd.read_csv('VLCOF23.csv')
+dfO = pd.read_csv('VLCOF23.csv')
 folium.PolyLine(list(zip(dfO['Latitude'],dfO['Longitude'])), color = 'red', opacity=0.5).add_to(m)
 
 folium.PolyLine(list(zip(df['Latitude'],df['Longitude']))).add_to(m)
