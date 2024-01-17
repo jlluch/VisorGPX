@@ -76,6 +76,7 @@ m = folium.Map(location=[latMap, lonMap], zoom_start=14,attr='LOL',max_bounds=Tr
 #Dibuja el recorrido oficial
 dfO = pd.read_csv('VLCOF23.csv')
 folium.PolyLine(list(zip(dfO['Latitude'],dfO['Longitude'])), color = 'red', opacity=0.5).add_to(m)
+folium.CircleMarker(list(zip(dfO['Latitude'],dfO['Longitude']))).add_to(m)
 
 folium.PolyLine(list(zip(df['Latitude'],df['Longitude']))).add_to(m)
 points = list(zip(df2['Latitude'],df2['Longitude']))
