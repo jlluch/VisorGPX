@@ -27,7 +27,7 @@ csv = os.listdir(path)
 
 @st.cache_data() 
 def loadFile(f):
-    df = pd.read_csv(path+f, decimal='.')
+    df = pd.read_csv(path+f)
     #columnas: Elevation	HR	Latitude	Longitude	Minutes	Tempature	Timestamp	Distance	Time_Dif	TimeDif	cumDistance
     col1, col2, col3 = st.sidebar.columns(3)
     with col1:
@@ -73,6 +73,9 @@ latMap = df.Latitude.mean()
 lonMap = df.Longitude.mean()
 
 m = folium.Map(location=[latMap, lonMap], zoom_start=14,attr='LOL',max_bounds=True)
+#Dibuja el recorrido oficial
+dfO = df = pd.read_csv('VLCOF23.csv')
+folium.PolyLine(list(zip(dfO['Latitude'],dfO['Longitude'])), color = 'red', opacity=0.5).add_to(m)
 
 folium.PolyLine(list(zip(df['Latitude'],df['Longitude']))).add_to(m)
 points = list(zip(df2['Latitude'],df2['Longitude']))
