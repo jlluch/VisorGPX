@@ -27,7 +27,7 @@ csv = os.listdir(path)
 
 @st.cache_data() 
 def loadFile(f):
-    df = pd.read_csv(path+f)
+    df = pd.read_csv(path+f, decimal='.')
     #columnas: Elevation	HR	Latitude	Longitude	Minutes	Tempature	Timestamp	Distance	Time_Dif	TimeDif	cumDistance
     col1, col2, col3 = st.sidebar.columns(3)
     with col1:
