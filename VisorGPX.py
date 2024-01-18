@@ -20,10 +20,10 @@ APP_SUB_TITLE = 'Autor: Xavi Lluch - ai2 - UPV.    Twitter:  [@xavi_runner](http
 
 
 file = '1997571669.csv'
-path     = "OL/"
+path     = ""
 #Creo una lista con los ficheros csv del directorio OL
-csv = os.listdir(path)
-
+# csv = os.listdir(path)
+csv = ['VLC23Dist.csv','VLC23-1Dist.csv','VLC23-2Dist.csv','VLC23-3Dist.csv']
 
 @st.cache_data() 
 def loadFile(f):
@@ -33,7 +33,7 @@ def loadFile(f):
     with col1:
         st.metric('Puntos', str(len(df)))
     with col2:
-        st.metric('Tiempo', str(df.loc[len(df)-1,'Timestamp']))
+        st.metric('Tiempo', str(df.loc[len(df)-1,'Seconds']))
     with col3:
         st.metric('Distancia', str(round(df.loc[len(df)-1,'cumDistance'],2))+' km') 
 
@@ -73,14 +73,21 @@ latMap = df.Latitude.mean()
 lonMap = df.Longitude.mean()
 
 m = folium.Map(location=[latMap, lonMap], zoom_start=14,attr='LOL',max_bounds=True)
-#Dibuja el recorrido oficial
-dfO = pd.read_csv('VLCOF23.csv')
+#Dibuja el recorrido de la actividad en rojo
+dfO = pd.read_csv(file.replace("Dist","",1))
 folium.PolyLine(list(zip(dfO['Latitude'],dfO['Longitude'])), color = 'red', opacity=0.5).add_to(m)
-points = list(zip(dfO['Latitude'],dfO['Longitude']))
-for point in points:
-    folium.CircleMarker(location=point, color='green', fill=True, radius=2).add_to(m)
 
+
+#Dibuja el recorrido ajustado y pone puntos negros en los elegidos
 folium.PolyLine(list(zip(df['Latitude'],df['Longitude']))).add_to(m)
+points = list(zip(df['Lat'],df['Lon']))
+for point in points:
+    folium.CircleMarker(location=point, color='black', fill=True, radius=2).add_to(m)
+
+points = list(zip(df['Latitude'],df['Longitude']))
+for point in points:
+    folium.CircleMarker(location=point, color='brown', fill=True, radius=2).add_to(m)
+
 points = list(zip(df2['Latitude'],df2['Longitude']))
 #Extrae como lista los valores de la columna Distance, multiplica por 1000 y redondea a 0 decimales y convierte a texto
 text = list(map(str, list(map(lambda x: round(x, 0), df2['Distance']*1000))))
@@ -88,11 +95,11 @@ text = list(map(str, list(map(lambda x: round(x, 0), df2['Distance']*1000))))
 st.sidebar.markdown('**Distancias máximas**')
 for t in text:
     st.sidebar.markdown(t+' m')
-#Añade una marca en cada punto de la lista points, incluye en la marca el valor de la lista text
-for point in points:
-    if point == points[0]:
-        folium.Marker(location=point,icon=folium.Icon(color="red"), popup=text[points.index(point)]).add_to(m)
-    else:
-        folium.Marker(location=point,icon=folium.Icon(color="blue"), popup=text[points.index(point)]).add_to(m)
+# #Añade una marca en cada punto de la lista points, incluye en la marca el valor de la lista text
+# for point in points:
+#     if point == points[0]:
+#         folium.Marker(location=point,icon=folium.Icon(color="red"), popup=text[points.index(point)]).add_to(m)
+#     else:
+#         folium.Marker(location=point,icon=folium.Icon(color="blue"), popup=text[points.index(point)]).add_to(m)
 
 folium_static(m, width=1280, height=1080)
