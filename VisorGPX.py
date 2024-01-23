@@ -13,6 +13,7 @@ from folium.plugins import MarkerCluster
 from streamlit_folium import st_folium, folium_static
 from datetime import datetime
 import os
+import plotly.express as px
 
 
 APP_TITLE = 'Visor GPX'
@@ -123,3 +124,15 @@ for t in text:
 #         folium.Marker(location=point,icon=folium.Icon(color="blue"), popup=text[points.index(point)]).add_to(m)
 
 folium_static(m, width=1280, height=1080)
+
+#Dibuja el gráfico de ritmo por distancia para el recorrido original
+fig = px.line(dfO, x="Distance", y="Pace", title='Original')
+fig.update_xaxes(title_text='Distancia (km)')
+fig.update_yaxes(title_text='Ritmo (min/km)')
+st.plotly_chart(fig, use_container_width=True)
+
+#Dibuja el gráfico de ritmo por distancia para el recorrido ajustado
+fig = px.line(df, x="Distance", y="Pace", title='Ajustado')
+fig.update_xaxes(title_text='Distancia (km)')
+fig.update_yaxes(title_text='Ritmo (min/km)')
+st.plotly_chart(fig, use_container_width=True)
