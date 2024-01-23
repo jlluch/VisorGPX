@@ -31,6 +31,9 @@ def loadFile(f):
     df = pd.read_csv(path+f)
     #columnas: Elevation	HR	Latitude	Longitude	Minutes	Tempature	Timestamp	Distance	Time_Dif	TimeDif	cumDistance
     dfO = pd.read_csv((path+f).replace("Dist","",1))
+    #Calcula el ritmo en minutos por km
+    dfO['Pace'] = 0.0
+    dfO['Pace'] = (dfO['TimeDif']/60) / (dfO['Distance'])
 
     st.sidebar.markdown('**Original**')
     col1, col2, col3 = st.sidebar.columns(3)
@@ -126,13 +129,13 @@ for t in text:
 folium_static(m, width=1280, height=1080)
 
 #Dibuja el gráfico de ritmo por distancia para el recorrido original
-fig = px.line(dfO, x="Distance", y="Pace", title='Original')
+fig = px.line(dfO, x="cumDistance", y="Pace", title='Original')
 fig.update_xaxes(title_text='Distancia (km)')
 fig.update_yaxes(title_text='Ritmo (min/km)')
 st.plotly_chart(fig, use_container_width=True)
 
 #Dibuja el gráfico de ritmo por distancia para el recorrido ajustado
-fig = px.line(df, x="Distance", y="Pace", title='Ajustado')
+fig = px.line(df, x="cumDistance", y="Pace", title='Ajustado')
 fig.update_xaxes(title_text='Distancia (km)')
 fig.update_yaxes(title_text='Ritmo (min/km)')
 st.plotly_chart(fig, use_container_width=True)
