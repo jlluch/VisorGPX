@@ -19,16 +19,37 @@ APP_TITLE = 'Visor GPX'
 APP_SUB_TITLE = 'Autor: Xavi Lluch - ai2 - UPV.    Twitter:  [@xavi_runner](https://twitter.com/xavi_runner)'
 
 
-file = '1997571669.csv'
+file = 'VLC23Dist.csv'
 path     = ""
 #Creo una lista con los ficheros csv del directorio OL
 # csv = os.listdir(path)
-csv = ['VLC23Dist.csv','VLC23-1Dist.csv','VLC23-2Dist.csv','VLC23-3Dist.csv']
+csv = ['VLC23Dist.csv','VLC23-1Dist.csv','VLC23-2Dist.csv']#,'VLC23-3Dist.csv']
 
 @st.cache_data() 
 def loadFile(f):
     df = pd.read_csv(path+f)
     #columnas: Elevation	HR	Latitude	Longitude	Minutes	Tempature	Timestamp	Distance	Time_Dif	TimeDif	cumDistance
+    dfO = pd.read_csv((path+f).replace("Dist","",1))
+
+    st.sidebar.markdown('**Original**')
+    col1, col2, col3 = st.sidebar.columns(3)
+    with col1:
+        st.metric('Puntos', str(len(dfO)))
+    with col2:
+        st.metric('Tiempo', str(dfO.loc[len(dfO)-1,'Seconds']))
+    with col3:
+        st.metric('Distancia', str(round(dfO.loc[len(dfO)-1,'cumDistance'],2))+' km') 
+    
+    st.sidebar.markdown('**Distancias**')
+    col1, col2, col3 = st.sidebar.columns(3)
+    with col1:
+        st.metric('Mínimo', str(round(dfO.Distance.min()*1000,3))+' m')
+    with col2:        
+        st.metric('Medio', str(round(dfO.Distance.mean()*1000,2))+' m')
+    with col3:
+        st.metric('Máximo', str(round(dfO.Distance.max()*1000,1))+' m')
+    
+    st.sidebar.markdown('**Ajustado**')
     col1, col2, col3 = st.sidebar.columns(3)
     with col1:
         st.metric('Puntos', str(len(df)))
@@ -36,10 +57,7 @@ def loadFile(f):
         st.metric('Tiempo', str(df.loc[len(df)-1,'Seconds']))
     with col3:
         st.metric('Distancia', str(round(df.loc[len(df)-1,'cumDistance'],2))+' km') 
-
-    #Ordena df por Distance, de mayor a menor, selecciona las 10 primeras filas, me quedo con Latitude y Longitude y hago una list zip
-    df2 = df.sort_values(by=['Distance'], ascending=False).head(10)[['Latitude','Longitude','Distance']]
-
+    
     st.sidebar.markdown('**Distancias**')
     col1, col2, col3 = st.sidebar.columns(3)
     with col1:
@@ -49,10 +67,13 @@ def loadFile(f):
     with col3:
         st.metric('Máximo', str(round(df.Distance.max()*1000,1))+' m')
     
-    #esctibe en el sidebar un enlace a la actividad en Strava
+    #Ordena df por Distance, de mayor a menor, selecciona las 10 primeras filas, me quedo con Latitude y Longitude y hago una list zip
+    df2 = df.sort_values(by=['Distance'], ascending=False).head(10)[['Latitude','Longitude','Distance']]    
+    
+    #escribe en el sidebar un enlace a la actividad en Strava
     st.sidebar.markdown('**Enlace a la actividad en Strava**')
     st.sidebar.markdown('https://www.strava.com/activities/'+str(f[:-4]))
-    return df, df2
+    return df, df2, dfO
 
 def display_file_filter():    
     f = st.sidebar.selectbox('Fichero', csv, index=0, key='selectFile')
@@ -64,7 +85,7 @@ st.title(APP_TITLE)
 
 file = display_file_filter()
 
-df, df2 = loadFile(file)
+df, df2, dfO = loadFile(file)
 
 st.caption(APP_SUB_TITLE+'\n'+file)
 
@@ -74,7 +95,6 @@ lonMap = df.Longitude.mean()
 
 m = folium.Map(location=[latMap, lonMap], zoom_start=14,attr='LOL',max_bounds=True)
 #Dibuja el recorrido de la actividad en rojo
-dfO = pd.read_csv(file.replace("Dist","",1))
 folium.PolyLine(list(zip(dfO['Latitude'],dfO['Longitude'])), color = 'red', opacity=0.5).add_to(m)
 
 
